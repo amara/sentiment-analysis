@@ -35,7 +35,6 @@ from wordcloud import ImageColorGenerator
 from PIL import Image
 
 import warnings
-get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # In[4]:
