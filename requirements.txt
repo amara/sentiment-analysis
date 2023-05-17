@@ -1,0 +1,13 @@
+streamlit
+snscrape
+emot
+pandas
+transformers
+matplotlib
+seaborn
+nltk
+textblob
+plotly
+wordcloud
+scikit-learn
+imbalanced-learn
