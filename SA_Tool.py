@@ -141,4 +141,5 @@ colors = ['#ff9999','#66b3ff','#99ff99']
 
 fig = plt.figure(figsize=(6,6), dpi=100)
 ax = plt.subplot(111)
-st.pyplot(sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)) 
+sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
+st.pyplot(fig) 
