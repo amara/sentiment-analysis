@@ -5,6 +5,7 @@
 
 
 #libraries needed
+import streamlit as st
 import pandas as pd
 import snscrape.modules.twitter as sntwitter
 import numpy as np
