@@ -148,7 +148,7 @@ sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", c
 
 
 
-df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets2)
+df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets)
 
 def color_survived(val):
         color = '#ff9999' if val=="Positive" else '#99ff99' if val=="Negative" else '#66b3ff'
@@ -221,7 +221,7 @@ with plt.style.context("rose-pine.mplstyle"):
 
 from PIL import Image
 
-cloud_image='mask/twitter_mask.png'
+cloud_image='twitter_mask.png'
 
 mask = np.array(Image.open(cloud_image))
 
