@@ -206,7 +206,7 @@ data = data[:10]
 with plt.style.context("rose-pine.mplstyle"):
     #data = data.nlargest(columns="Count", n = 10) 
     plt.figure(figsize=(15,4))
-    ax = sns.barplot( data.index,data.values, alpha=0.8)
+    ax = sns.barplot(x=data.index,y=data.values, alpha=0.8)
     ax.set(xlabel = 'Word from Tweet')
     ax.set(ylabel = 'Count of words')
     plt.title('Top 10 Words Overall')
