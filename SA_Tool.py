@@ -154,20 +154,19 @@ sentences = []
 
 for word in X:
     sentences.append(word)
-sentences
+
 lines = list()
 for line in sentences:
     words = line.split()
     for w in words:
         lines.append(w)
-lines[:10] #shows first 10 words in the first tweet
+
 
 #stemming all the words to their root word
 stemmer = SnowballStemmer(language='english')
 stem=[]
 for word in lines:
     stem.append(stemmer.stem(word))
-stem[:20]
 #removes stopwords (very common words in a sentence)
 stem2 = []
 for word in stem:
