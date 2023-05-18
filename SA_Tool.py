@@ -228,4 +228,4 @@ w_cloud = WordCloud(width = 7000, height = 5000,
 fig = plt.imshow(w_cloud, interpolation='bilinear')
 plt.axis("off")
 plt.title('Word Cloud')
-st.plotly_chart(fig)
+st.pyplot(fig)
