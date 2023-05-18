@@ -238,6 +238,7 @@ def color_survived(val):
         color = '#ff9999' if val=="Positive" else '#99ff99' if val=="Negative" else '#66b3ff'
         return f'background-color: {color}'
 dff = df[['Sentiment','full_text']]
+dff.rename(columns={'full_text':'Tweets'}, inplace=True)
 dff =dff[:10]
 dff = dff.style.applymap(color_survived, subset=['Sentiment'])
 dff.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
