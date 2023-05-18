@@ -146,7 +146,7 @@ st.pyplot(fig)
 
 
 
-df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets2)
+df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets)
 def color_survived(val):
         color = '#ff9999' if val=="Positive" else '#99ff99' if val=="Negative" else '#66b3ff'
         return f'background-color: {color}'
