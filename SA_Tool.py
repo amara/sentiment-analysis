@@ -225,8 +225,8 @@ w_cloud = WordCloud(width = 7000, height = 5000,
                 mask = mask).generate(tweets_string)
 
 # Display the generated Word Cloud
-plt.imshow(w_cloud, interpolation='bilinear')
+fig = plt.imshow(w_cloud, interpolation='bilinear')
 plt.axis("off")
 plt.title('Word Cloud')
 plt.show()
-st.pyplot()
+st.pyplot(fig)
