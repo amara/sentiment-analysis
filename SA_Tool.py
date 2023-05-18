@@ -187,5 +187,24 @@ with plt.style.context("rose-pine.mplstyle"):
     plt.title('Top 10 Words Overall')
     st.pyplot(fig) 
 
-    
+#tokenization
+from nltk.util import ngrams 
+import functools
+
+tokenized_tweet = df['Processed_Tweets'].apply(lambda x: list(ngrams(x.split(), 2)))
+
+l = functools.reduce(lambda x, y: list(x)+list(y), zip(tokenized_tweet))
+
+flatten = [item for sublist in l for item in sublist]
+counts = collections.Counter(flatten).most_common()
+df2 = pd.DataFrame.from_records(counts, columns=['Phrase', 'Count'])
+df2['Phrase']= df2['Phrase'].apply(lambda x: ' '.join([w for w in x]))
+
+with plt.style.context("rose-pine.mplstyle"):
+    df2 = df2.nlargest(columns="Count", n = 10) 
+    fig = plt.figure(figsize=(15,4))
+    ax = sns.barplot(data=df2, x= "Phrase", y = "Count")
+    ax.set(ylabel = 'Count')
+    plt.title('Top 10 Occuring Bigrams')
+    st.pyplot(fig) 
 
