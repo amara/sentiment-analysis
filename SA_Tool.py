@@ -148,6 +148,10 @@ with col1:
         st.pyplot(fig) 
 
 
+X = df['Processed_Tweets'].values
+y = df['Sentiment'].values
+
+
 from PIL import Image
 
 cloud_image='mask/twitter_mask.png'
@@ -171,8 +175,6 @@ with col2:
 
 
 
-X = df['Processed_Tweets'].values
-y = df['Sentiment'].values
 
 #break each tweet sentence into words
 from nltk.stem.snowball import SnowballStemmer
