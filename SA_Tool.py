@@ -219,14 +219,12 @@ mask = np.array(Image.open(cloud_image))
 tweets_string = pd.Series(X).str.cat(sep=' ')
 stopwords = set(STOPWORDS)
 
-w_cloud = WordCloud(width = 7000, height = 5000,
+wordcloud = WordCloud(width = 7000, height = 5000,
                 background_color ='white',
                 stopwords = stopwords,
                 mask = mask).generate(tweets_string)
 
-# Display the generated Word Cloud
-fig = plt.imshow(w_cloud, interpolation='bilinear')
+fig, ax = plt.subplots(figsize = (12, 8))
+ax.imshow(wordcloud)
 plt.axis("off")
-plt.title('Word Cloud')
-plt.show()
 st.pyplot(fig)
