@@ -228,3 +228,17 @@ fig, ax = plt.subplots(figsize = (12, 8))
 ax.imshow(wordcloud)
 plt.axis("off")
 st.pyplot(fig)
+
+
+
+
+df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets)
+
+def color_survived(val):
+        color = '#ff9999' if val=="Positive" else '#99ff99' if val=="Negative" else '#66b3ff'
+        return f'background-color: {color}'
+dff = df[['Sentiment','full_text']]
+dff =dff[:10]
+dff = dff.style.applymap(color_survived, subset=['Sentiment'])
+dff.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
+st.dataframe(dff, use_container_width=True)
