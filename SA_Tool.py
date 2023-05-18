@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[356]:
 
 
 #libraries needed
@@ -37,7 +37,7 @@ from PIL import Image
 import warnings
 
 
-# In[4]:
+# In[357]:
 
 
 df = pd.read_csv('dataset_twitter.csv',encoding='ISO-8859-1')
@@ -48,10 +48,10 @@ df.head()
 
 # **Data PreProcessing**
 
-# In[5]:
+# In[358]:
 
 
-import nltk
+import nltk,collections
 from nltk.corpus import stopwords
 nltk.download("stopwords")
 nltk.download('punkt')
@@ -59,13 +59,13 @@ nltk.download('wordnet')
 eng_stop_words = list(stopwords.words('english'))
 
 
-# In[6]:
+# In[359]:
 
 
 emoji = list(UNICODE_EMOJI.keys())
 
 
-# In[7]:
+# In[360]:
 
 
 # function for preprocessing tweet in preparation for sentiment analysis
@@ -87,26 +87,21 @@ def ProcessedTweets(text):
     lemmatizer = WordNetLemmatizer() 
     lemma_words = [lemmatizer.lemmatize(w) for w in filtered_words]
     text = " ".join(lemma_words)
-    return text
+    
+    clean_str = ''.join([c for c in text if ord(c) < 128])
+    return clean_str
 
 
-# In[8]:
+# In[361]:
 
 
 # Generate a new column called 'Processed Tweets' by applying preprocessed tweets function to the 'Tweet' column.
-#df['Processed_Tweets'] = df['tweet'].apply(ProcessedTweets)
 df['Processed_Tweets'] = df['full_text'].apply(ProcessedTweets)
-
-
-# In[9]:
-
-
-df.head(5)
 
 
 # **Sentiment Analysis**
 
-# In[10]:
+# In[363]:
 
 
 # Function for polarity score
@@ -127,28 +122,152 @@ def sentimenttextblob(polarity):
         return "Positive" 
 
 
-# In[11]:
+# In[364]:
 
 
 # using the functions to get the polarity and sentiment
+
 df['Polarity'] = df['Processed_Tweets'].apply(polarity)
 df['Subjectivity'] = df['Processed_Tweets'].apply(subjectivity)
-
 df['Sentiment'] = df['Polarity'].apply(sentimenttextblob)
 
 sent = df['Sentiment'].value_counts()
-sent
+
+#add colors
+colors = ['#ff9999','#66b3ff','#99ff99']
+
+#plot pie chart
+
+fig = plt.figure(figsize=(6,6), dpi=100)
+ax = plt.subplot(111)
+sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
 
 
-# In[12]:
+# In[365]:
 
 
-df.head(2)
 
 
-# In[20]:
+df['Processed_Tweets2'] = df['full_text'].apply(ProcessedTweets2)
+
+def color_survived(val):
+        color = '#ff9999' if val=="Positive" else '#99ff99' if val=="Negative" else '#66b3ff'
+        return f'background-color: {color}'
+dff = df[['Sentiment','full_text']]
+dff.rename(columns = {'full_text':'Tweets'}, inplace = True)
+dff =dff[:10]
+dff = dff.style.applymap(color_survived, subset=['Sentiment'])
+dff.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
+
+
+# In[366]:
 
 
 X = df['Processed_Tweets'].values
 y = df['Sentiment'].values
+
+
+# In[370]:
+
+
+#break each tweet sentence into words
+from nltk.stem.snowball import SnowballStemmer
+
+
+sentences = []
+
+for word in X:
+    sentences.append(word)
+sentences
+lines = list()
+for line in sentences:
+    words = line.split()
+    for w in words:
+        lines.append(w)
+lines[:10] #shows first 10 words in the first tweet
+
+#stemming all the words to their root word
+stemmer = SnowballStemmer(language='english')
+stem=[]
+for word in lines:
+    stem.append(stemmer.stem(word))
+stem[:20]
+#removes stopwords (very common words in a sentence)
+stem2 = []
+for word in stem:
+    if word not in eng_stop_words:
+        stem2.append(word)
+#creates a new dataframe for the stem and shows the count of the most used words
+data = pd.DataFrame(stem2)
+data=data[0].value_counts()
+
+#plots the top 20 used words
+data = data[:10]
+with plt.style.context("rose-pine.mplstyle"):
+    #data = data.nlargest(columns="Count", n = 10) 
+    plt.figure(figsize=(15,4))
+    ax = sns.barplot( data.index,data.values, alpha=0.8)
+    ax.set(xlabel = 'Word from Tweet')
+    ax.set(ylabel = 'Count of words')
+    plt.title('Top 10 Words Overall')
+    plt.show()
+  
+    
+    
+
+
+# In[372]:
+
+
+from PIL import Image
+
+cloud_image='mask/twitter_mask.png'
+
+mask = np.array(Image.open(cloud_image))
+
+#tweets_string = " ".join(cat.split()[1] for cat in df.text)
+tweets_string = pd.Series(X).str.cat(sep=' ')
+stopwords = set(STOPWORDS)
+
+w_cloud = WordCloud(width = 7000, height = 5000,
+                background_color ='white',
+                stopwords = stopwords,
+                mask = mask).generate(tweets_string)
+
+# Display the generated Word Cloud
+plt.imshow(w_cloud, interpolation='bilinear')
+plt.axis("off")
+plt.title('Word Cloud')
+plt.show()
+
+
+# In[369]:
+
+
+#tokenization
+from nltk.util import ngrams 
+import functools
+
+tokenized_tweet = df['Processed_Tweets'].apply(lambda x: list(ngrams(x.split(), 2)))
+
+l = functools.reduce(lambda x, y: list(x)+list(y), zip(tokenized_tweet))
+
+flatten = [item for sublist in l for item in sublist]
+counts = collections.Counter(flatten).most_common()
+df2 = pd.DataFrame.from_records(counts, columns=['Phrase', 'Count'])
+df2['Phrase']= df2['Phrase'].apply(lambda x: ' '.join([w for w in x]))
+
+with plt.style.context("rose-pine.mplstyle"):
+    df2 = df2.nlargest(columns="Count", n = 10) 
+    plt.figure(figsize=(15,4))
+    ax = sns.barplot(data=df2, x= "Phrase", y = "Count")
+    ax.set(ylabel = 'Count')
+    plt.title('Top 10 Occuring Bigrams')
+    plt.show()
+
+
+# In[ ]:
+
+
+
 
