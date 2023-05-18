@@ -138,11 +138,11 @@ sent = df['Sentiment'].value_counts()
 colors = ['#ff9999','#66b3ff','#99ff99']
 
 #plot pie chart
-
-fig = plt.figure(figsize=(6,6), dpi=100)
-ax = plt.subplot(111)
-sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
-st.pyplot(fig) 
+with plt.style.context("rose-pine.mplstyle"):
+    fig = plt.figure(figsize=(6,6), dpi=100)
+    ax = plt.subplot(111)
+    sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
+    st.pyplot(fig) 
 
 X = df['Processed_Tweets'].values
 y = df['Sentiment'].values
