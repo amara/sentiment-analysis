@@ -38,6 +38,7 @@ from PIL import Image
 import warnings
 
 
+col1, col2 = st.beta_columns(2)
 # In[357]:
 
 
@@ -137,18 +138,44 @@ sent = df['Sentiment'].value_counts()
 #add colors
 colors = ['#ff9999','#66b3ff','#99ff99']
 
+col1, col2 = st.beta_columns(2)
 #plot pie chart
-with plt.style.context("rose-pine.mplstyle"):
-    fig = plt.figure(figsize=(6,6), dpi=100)
-    ax = plt.subplot(111)
-    sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
-    st.pyplot(fig) 
+with col1:
+    with plt.style.context("rose-pine.mplstyle"):
+        fig = plt.figure(figsize=(6,6), dpi=100)
+        ax = plt.subplot(111)
+        sent.plot.pie(ax=ax, autopct='%1.1f%%', startangle=270, fontsize=12, label="", colors=colors)
+        st.pyplot(fig) 
+
+
+from PIL import Image
+
+cloud_image='mask/twitter_mask.png'
+
+mask = np.array(Image.open(cloud_image))
+
+#tweets_string = " ".join(cat.split()[1] for cat in df.text)
+tweets_string = pd.Series(X).str.cat(sep=' ')
+stopwords = set(STOPWORDS)
+
+wordcloud = WordCloud(width = 7000, height = 5000,
+                background_color ='white',
+                stopwords = stopwords,
+                mask = mask).generate(tweets_string)
+
+with col2:
+    fig, ax = plt.subplots(figsize = (12, 8))
+    ax.imshow(wordcloud)
+    plt.axis("off")
+    st.pyplot(fig)
+
+
 
 X = df['Processed_Tweets'].values
 y = df['Sentiment'].values
+
 #break each tweet sentence into words
 from nltk.stem.snowball import SnowballStemmer
-
 
 sentences = []
 
@@ -208,26 +235,6 @@ with plt.style.context("rose-pine.mplstyle"):
     plt.title('Top 10 Occuring Bigrams')
     st.pyplot(fig) 
 
-
-from PIL import Image
-
-cloud_image='mask/twitter_mask.png'
-
-mask = np.array(Image.open(cloud_image))
-
-#tweets_string = " ".join(cat.split()[1] for cat in df.text)
-tweets_string = pd.Series(X).str.cat(sep=' ')
-stopwords = set(STOPWORDS)
-
-wordcloud = WordCloud(width = 7000, height = 5000,
-                background_color ='white',
-                stopwords = stopwords,
-                mask = mask).generate(tweets_string)
-
-fig, ax = plt.subplots(figsize = (12, 8))
-ax.imshow(wordcloud)
-plt.axis("off")
-st.pyplot(fig)
 
 
 
